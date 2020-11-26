@@ -1,0 +1,39 @@
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+
+[tool.black]
+target-version = ['py38']
+
+
+[tool.isort]
+# Black compatible config
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 88
+multi_line_output = 3
+use_parentheses = true
+
+
+[tool.poetry]
+authors = ["Author"]
+description = ""
+name = "project"
+readme = "README.md"
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+black = "19.10b0"
+flake8 = "*"
+isort = { extras = ["pyproject"], version = "*" }
+pre-commit = "*"
+pytest = "*"
+
+
+[tool.pytest.ini_options]
+filterwarnings = ["error",]
