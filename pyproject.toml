@@ -35,6 +35,8 @@ black = "19.10b0"
 flake8 = "*"
 isort = { extras = ["pyproject"], version = "*" }
 pre-commit = "*"
+# pyflakes's support for Annotated with constants isn't released yet
+pyflakes = {git = "https://github.com/PyCQA/pyflakes.git", rev = "c23a81037d4f68067c4c987985d177ec7664de59"}
 pytest = "*"
 
 

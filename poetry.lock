@@ -232,6 +232,13 @@ description = "passive checker of Python programs"
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/PyCQA/pyflakes.git"
+reference = "c23a81037d4f68067c4c987985d177ec7664de59"
+resolved_reference = "c23a81037d4f68067c4c987985d177ec7664de59"
 
 [[package]]
 name = "pyparsing"
@@ -324,7 +331,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c04c5dceb0f63f05604e726986dd1980cb0257ff8166a81729282190f60aa78a"
+content-hash = "6e2f9c6a494664d0e04d434f9f512cbd0e12906c195dd35a4e397046d8ffc38a"
 
 [metadata.files]
 appdirs = [
@@ -435,10 +442,7 @@ pydantic = [
     {file = "pydantic-1.7.2-py3-none-any.whl", hash = "sha256:6665f7ab7fbbf4d3c1040925ff4d42d7549a8c15fe041164adfe4fc2134d4cce"},
     {file = "pydantic-1.7.2.tar.gz", hash = "sha256:c8200aecbd1fb914e1bd061d71a4d1d79ecb553165296af0c14989b89e90d09b"},
 ]
-pyflakes = [
-    {file = "pyflakes-2.2.0-py2.py3-none-any.whl", hash = "sha256:0d94e0e05a19e57a99444b6ddcf9a6eb2e5c68d3ca1e98e90707af8152c90a92"},
-    {file = "pyflakes-2.2.0.tar.gz", hash = "sha256:35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"},
-]
+pyflakes = []
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
