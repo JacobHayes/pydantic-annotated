@@ -18,13 +18,16 @@ use_parentheses = true
 
 
 [tool.poetry]
-authors = ["Author"]
+authors = ["Jacob Hayes <jacob.r.hayes@gmail.com>"]
 description = ""
-name = "project"
+license = "MIT"
+name = "pydantic-annotated"
 readme = "README.md"
+repository = "http://github.com/JacobHayes/pydantic-annotated"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+pydantic = "*"
 python = "^3.9"
 
 [tool.poetry.dev-dependencies]
