@@ -1,4 +1,4 @@
-from typing import Annotated, get_origin, get_type_hints
+from typing import Annotated, get_type_hints
 
 from pydantic_annotated import (
     GE,
@@ -6,36 +6,51 @@ from pydantic_annotated import (
     BaseModel,
     Default,
     Description,
-    FieldAnnotation,
+    FieldAnnotationModel,
     _pydantic_is_annotated_aware,
+    named_field_annotation,
 )
 
 
-def test_model():
-    class Model(BaseModel):
-        x: Annotated[int, Alias("x"), Default(5)]
+def test_annotation():
+    x_hint = Annotated[int, Alias("x"), Default(5)]
 
-    assert Model().x == 5
+    class FooBar(BaseModel):
+        x: x_hint
+
+    assert FooBar().x == 5
     if _pydantic_is_annotated_aware:
-        x_hint = get_type_hints(Model, include_extras=True)["x"]
-        assert get_origin(x_hint) is Annotated
+        assert get_type_hints(FooBar, include_extras=True)["x"] == x_hint
+
+
+def test_custom_annotation():
+    PII = named_field_annotation("PII")
+
+    class FooBar(BaseModel):
+        x: Annotated[int, PII(True)]
+
+    assert FooBar.schema() == {
+        "title": "FooBar",
+        "type": "object",
+        "properties": {"x": {"title": "X", "PII": True, "type": "integer"}},
+        "required": ["x"],
+    }
 
 
 def test_nested_annotations():
     # Nested annotations should prefer the last value. We may consider supporting multiple instances
     # for certain annotations (ex: Alias), but that would require upstream pydantic support.
-    class Model(BaseModel):
+    class FooBar(BaseModel):
         x: Annotated[Annotated[int, Default(5)], Default(10)]
 
-    assert Model().x == 10
+    assert FooBar().x == 10
 
 
-def test_complex_annotations():
-    PII = FieldAnnotation.named("PII")
-    # Do we want to support linking a model/type with an annotation?
-    ComplexAnnotation = FieldAnnotation.named("complex_annotation")
+def test_field_annotation_model():
+    class PII(FieldAnnotationModel):
+        status: bool
 
-    class ComplexModel(BaseModel):
+    class ComplexAnnotation(FieldAnnotationModel):
         x: int
         y: int
 
@@ -43,10 +58,10 @@ def test_complex_annotations():
         count: Annotated[
             int,
             Alias("cnt"),
+            ComplexAnnotation(x=1, y=2),
             Description("Count of FooBars"),
             GE(0),
-            PII(False),
-            ComplexAnnotation(ComplexModel(x=1, y=2)),
+            PII(status=True),
         ]
 
     assert FooBar.schema() == {
@@ -57,8 +72,8 @@ def test_complex_annotations():
                 "title": "Cnt",
                 "description": "Count of FooBars",
                 "minimum": 0,
-                "PII": False,
-                "complex_annotation": ComplexModel(x=1, y=2),
+                "ComplexAnnotation": ComplexAnnotation(x=1, y=2),
+                "PII": PII(status=True),
                 "type": "integer",
             }
         },

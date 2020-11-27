@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Optional, get_args, get_origin, no_type_check
+from typing import Any, ClassVar, get_args, get_origin, no_type_check
 
 from pydantic import BaseModel as _BaseModel
 from pydantic.fields import FieldInfo, Undefined
@@ -18,20 +18,26 @@ except ImportError:
     _pydantic_is_annotated_aware = False
 
 
+class ClassName:
+    def __get__(self, obj: Any, type_: Any) -> str:
+        return type_.__name__
+
+
 class FieldAnnotation:
-    name: Optional[str] = None
+    _annotation_name: ClassVar[str] = ClassName()
+    _annotation_value: Any
 
     def __init__(self, value: Any):
-        self.value = value
+        self._annotation_value = value
 
     def populate_field_info(self, field_info: FieldInfo):
-        if hasattr(field_info, self.name):
-            setattr(field_info, self.name, self.value)
+        if hasattr(field_info, type(self).__name__):
+            setattr(field_info, self._annotation_name, self._annotation_value)
         else:  # Add to extra
-            field_info.extra[self.name] = self.value
+            field_info.extra[self._annotation_name] = self._annotation_value
 
     @classmethod
-    def create_field_info(cls, annotation, value=Undefined):
+    def create_field_info(cls, annotation: dict[str, Any], value: Any = Undefined):
         if isinstance(value, FieldInfo):
             # Annotations override the existing FieldInfo. Use deepcopy in case the FieldInfo is
             # used multiple times with different annotations.
@@ -62,11 +68,29 @@ class FieldAnnotation:
             {type(arg): arg for arg in get_args(value) if isinstance(arg, cls)}.values()
         )
 
-    @classmethod
-    def named(cls, name: str) -> type[FieldAnnotation]:
-        return type(
-            "".join(part.title() for part in name.split("_")), (cls,), {"name": name},
-        )
+
+def named_field_annotation(name: str):
+    return type(name, (FieldAnnotation,), {},)
+
+
+# Built in field params - the names must match the FieldInfo attributes. Ideally these could be
+# typed (like the FieldAnnotationModel below), but that would require more wrappers.
+Default = named_field_annotation("default")
+DefaultFactory = named_field_annotation("default_factory")
+Alias = named_field_annotation("alias")
+Title = named_field_annotation("title")
+Description = named_field_annotation("description")
+Const = named_field_annotation("const")
+GT = named_field_annotation("gt")
+GE = named_field_annotation("ge")
+LT = named_field_annotation("lt")
+LE = named_field_annotation("le")
+MultipleOf = named_field_annotation("multiple_of")
+MinItems = named_field_annotation("min_items")
+MaxItems = named_field_annotation("max_items")
+MinLength = named_field_annotation("min_length")
+MaxLength = named_field_annotation("max_length")
+Regex = named_field_annotation("regex")
 
 
 class ModelMetaclass(_ModelMetaclass):
@@ -95,20 +119,7 @@ class BaseModel(_BaseModel, metaclass=ModelMetaclass):
     pass
 
 
-# Built in field params.
-Default = FieldAnnotation.named("default")
-DefaultFactory = FieldAnnotation.named("default_factory")
-Alias = FieldAnnotation.named("alias")
-Title = FieldAnnotation.named("title")
-Description = FieldAnnotation.named("description")
-Const = FieldAnnotation.named("const")
-GT = FieldAnnotation.named("gt")
-GE = FieldAnnotation.named("ge")
-LT = FieldAnnotation.named("lt")
-LE = FieldAnnotation.named("le")
-MultipleOf = FieldAnnotation.named("multiple_of")
-MinItems = FieldAnnotation.named("min_items")
-MaxItems = FieldAnnotation.named("max_items")
-MinLength = FieldAnnotation.named("min_length")
-MaxLength = FieldAnnotation.named("max_length")
-Regex = FieldAnnotation.named("regex")
+class FieldAnnotationModel(BaseModel, FieldAnnotation):
+    @property
+    def _annotation_value(self):
+        return self
