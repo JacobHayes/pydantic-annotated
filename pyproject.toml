@@ -21,7 +21,6 @@ use_parentheses = true
 authors = ["Jacob Hayes <jacob.r.hayes@gmail.com>"]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Framework :: pydantic",
 ]
 description = "Generate Pydantic Fields with typing.Annotated"
 keywords = ["Annotated", "pydantic", "typing"]
