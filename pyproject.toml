@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 
 [tool.black]
-target-version = ['py38']
+target-version = ["py38"]
 
 
 [tool.isort]
@@ -19,12 +19,17 @@ use_parentheses = true
 
 [tool.poetry]
 authors = ["Jacob Hayes <jacob.r.hayes@gmail.com>"]
-description = ""
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: pydantic",
+]
+description = "Generate Pydantic Fields with typing.Annotated"
+keywords = ["Annotated", "pydantic", "typing"]
 license = "MIT"
 name = "pydantic-annotated"
 readme = "README.md"
 repository = "http://github.com/JacobHayes/pydantic-annotated"
-version = "0.0.1"
+version = "0.0.1a0"
 
 [tool.poetry.dependencies]
 pydantic = "*"
