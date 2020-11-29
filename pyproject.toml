@@ -28,7 +28,7 @@ license = "MIT"
 name = "pydantic-annotated"
 readme = "README.md"
 repository = "http://github.com/JacobHayes/pydantic-annotated"
-version = "0.0.1a0"
+version = "0.0.1a1"
 
 [tool.poetry.dependencies]
 pydantic = "*"
